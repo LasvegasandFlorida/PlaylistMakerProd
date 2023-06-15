@@ -5,17 +5,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/mainBlue"
-    android:paddingLeft="@dimen/standard"
-    android:paddingRight="@dimen/standard">
+    android:paddingTop="14dp"
+    android:paddingLeft="@dimen/standard_padding"
+    android:paddingRight="@dimen/standard_padding">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textSize="@dimen/text"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        />
+        android:textColor="@color/white"/>
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,14 +28,13 @@
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:text="@string/search"
-            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textSize="@dimen/text"
             android:textColor="@color/YP_black"
-            app:cornerRadius ="@dimen/standard"
+            app:cornerRadius ="@dimen/standard_padding"
             app:iconTint="@color/YP_black"
             app:iconGravity="textStart"
-            app:iconPadding="10dp"
+            app:iconPadding="@dimen/icon_padding"
             app:icon = "@drawable/search_vector"/>
         <Button
             android:id="@+id/media_button"
@@ -45,16 +43,14 @@
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:text="@string/media_string"
-            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textSize="@dimen/text"
             android:textColor="@color/YP_black"
-            app:cornerRadius ="@dimen/standard"
+            app:cornerRadius ="@dimen/standard_padding"
             app:iconTint="@color/YP_black"
             app:iconGravity="textStart"
-            app:iconPadding="10dp"
-            app:icon = "@drawable/vector"
-            />
+            app:iconPadding="@dimen/icon_padding"
+            app:icon = "@drawable/vector"/>
         <Button
             android:id="@+id/settings_button"
             android:layout_width="match_parent"
@@ -62,16 +58,14 @@
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:text="@string/settings"
-            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textSize="@dimen/text"
             android:textColor="@color/YP_black"
-            app:cornerRadius ="@dimen/standard"
+            app:cornerRadius ="@dimen/standard_padding"
             app:iconTint="@color/YP_black"
             app:iconGravity="textStart"
-            app:iconPadding="10dp"
-            app:icon = "@drawable/settings_vector"
-            >
+            app:iconPadding="@dimen/icon_padding"
+            app:icon = "@drawable/settings_vector">
 
         </Button>
     </LinearLayout>
