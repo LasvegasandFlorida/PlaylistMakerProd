@@ -4,30 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="@color/white_back">
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/standard_padding"
         android:paddingStart="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="RtlSymmetry,UseCompoundDrawables">
         <ImageView
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:iconTint="@color/YP_black"
             android:src="@drawable/arrow_back"
-            android:layout_marginTop="8dp"
-            />
+            android:layout_marginTop="8dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_menu"
             android:textSize="@dimen/text"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/YP_black"
-            android:layout_marginStart="28dp" />
+            android:textAppearance="@font/ys_display_medium"
+            android:layout_marginStart="28dp"/>
     </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"
@@ -35,97 +32,31 @@
         android:paddingStart="@dimen/standard_padding"
         android:paddingEnd="@dimen/standard_padding"
         android:paddingTop="61dp"
-        android:paddingBottom="@dimen/settings_bottom_padding"
-        >
+        android:paddingBottom="@dimen/settings_bottom_padding">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings_night"
+            android:textAppearance="@font/ys_display_medium"
             android:textSize="@dimen/text_small"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/YP_black"
-            android:layout_gravity="start"
-            />
+            android:text="@string/settings_night"/>
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:thumbTint="@color/YP_Text_Gray"
             android:trackTint="@color/YP_Light_Gray"
-
-            />
+            tools:ignore="UseSwitchCompatOrMaterialXml"/>
     </FrameLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
-        android:paddingBottom="@dimen/settings_bottom_padding"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_share"
-            android:textSize="@dimen/text_small"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/YP_black"
-            android:layout_gravity="start"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:iconTint="@color/YP_black"
-            android:src="@drawable/share_vector"
-            android:layout_gravity="end"
-            />
-    </FrameLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
-        android:paddingBottom="@dimen/settings_bottom_padding"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_help"
-            android:textSize="@dimen/text_small"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/YP_black"
-            android:layout_gravity="start"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:iconTint="@color/YP_black"
-            android:src="@drawable/support_vector"
-            android:layout_gravity="end"
-            />
-    </FrameLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
-        android:paddingBottom="@dimen/settings_bottom_padding"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_agreement"
-            android:textSize="@dimen/text_small"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/YP_black"
-            android:layout_gravity="start"
-
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:iconTint="@color/YP_black"
-            android:src="@drawable/arrow_fwrd_vector"
-            android:layout_gravity="end"
-            />
-    </FrameLayout>
+        <Button
+            style="@style/SettingsMenu"
+            app:icon="@drawable/share_vector"
+            android:text="@string/settings_share"/>
+        <Button
+            style="@style/SettingsMenu"
+            app:icon="@drawable/support_vector"
+            android:text="@string/settings_help"/>
+        <Button
+            style="@style/SettingsMenu"
+            app:icon="@drawable/arrow_fwrd_vector"
+            android:text="@string/settings_agreement"/>
 </LinearLayout>
