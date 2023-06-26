@@ -7,10 +7,6 @@
     </style>
     <style name="SettingsTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:background">@color/white_back</item>
-        <item name="android:backgroundTint">@color/white_back</item>
-        <item name="iconTint">@color/YP_black</item>
-        <item name="tint">@color/YP_black</item>
-        <item name="android:textColor">@color/YP_black</item>
     </style>
     <style name="Theme.PlaylistMakerProd" parent="Base.Theme.PlaylistMakerProd" />
 </resources>

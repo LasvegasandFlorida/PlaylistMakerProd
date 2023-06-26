@@ -13,12 +13,14 @@
         android:orientation="horizontal"
         tools:ignore="RtlSymmetry,UseCompoundDrawables">
         <ImageView
+            style="@style/SettingsSwitch"
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/arrow_back"
             android:layout_marginTop="8dp"/>
         <TextView
+            style="@style/SettingsSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/settings_menu"
@@ -29,33 +31,34 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
-        android:paddingTop="61dp"
-        android:paddingBottom="@dimen/settings_bottom_padding">
+        android:paddingTop="61dp">
         <TextView
+            style="@style/SettingsMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@font/ys_display_medium"
             android:textSize="@dimen/text_small"
             android:text="@string/settings_night"/>
         <Switch
+            android:id="@+id/theme_switch"
+            style="@style/SettingsSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:thumbTint="@color/YP_Text_Gray"
-            android:trackTint="@color/YP_Light_Gray"
             tools:ignore="UseSwitchCompatOrMaterialXml"/>
     </FrameLayout>
         <Button
+            android:id="@+id/share_button"
             style="@style/SettingsMenu"
             app:icon="@drawable/share_vector"
             android:text="@string/settings_share"/>
         <Button
+            android:id="@+id/support_button"
             style="@style/SettingsMenu"
             app:icon="@drawable/support_vector"
             android:text="@string/settings_help"/>
         <Button
+            android:id="@+id/agreement_button"
             style="@style/SettingsMenu"
             app:icon="@drawable/arrow_fwrd_vector"
             android:text="@string/settings_agreement"/>

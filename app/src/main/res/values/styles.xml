@@ -2,7 +2,6 @@
 
 <resources>
     <style name="MainButtonStyle" >
-
         <item name="android:textAppearance">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/text</item>
         <item name="android:backgroundTint">@color/white</item>
@@ -12,7 +11,7 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/icon_padding</item>
     </style>
-    <style name="SettingsMenu" >
+    <style name="SettingsMenu">
         <item name="android:textAppearance">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/text_small</item>
         <item name="android:paddingStart">@dimen/standard_padding</item>
@@ -22,7 +21,14 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">@dimen/settings_bottom_padding</item>
-
         <item name="iconGravity">end</item>
+        <item name="iconTint">@color/YP_Text_Gray</item>
+        <item name="android:backgroundTint">@color/white_back</item>
+        <item name="android:textColor">@color/YP_black</item>
+
+    </style>
+    <style name="SettingsSwitch">
+        <item name="android:thumbTint">@color/YP_Text_Gray</item>
+        <item name="android:trackTint">@color/YP_Light_Gray</item>
     </style>
 </resources>
