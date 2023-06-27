@@ -17,6 +17,7 @@
             android:exported="false" />
         <activity
             android:name=".SearchActivity"
+            android:theme="@style/SettingsTheme"
             android:exported="false" />
         <activity
             android:name=".MediaActivity"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <style name="MainButtonStyle" >
+    <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton" >
         <item name="android:textAppearance">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/text</item>
         <item name="android:backgroundTint">@color/white</item>
@@ -25,10 +25,19 @@
         <item name="iconTint">@color/YP_Text_Gray</item>
         <item name="android:backgroundTint">@color/white_back</item>
         <item name="android:textColor">@color/YP_black</item>
-
     </style>
     <style name="SettingsSwitch">
         <item name="android:thumbTint">@color/YP_Text_Gray</item>
         <item name="android:trackTint">@color/YP_Light_Gray</item>
+    </style>
+
+    <style name="SearchEditText">
+        <item name="android:background">@color/YP_Light_Gray</item>
+        <item name="android:textColorHint">@color/YP_Text_Gray</item>
+        <item name="android:drawableStart">@drawable/search_small_gray</item>
+        <item name="android:textColor">@color/YP_Text_Gray</item>
+    </style>
+    <style name="ClearBtn">
+        <item name="tint">@color/YP_black</item>
     </style>
 </resources>
