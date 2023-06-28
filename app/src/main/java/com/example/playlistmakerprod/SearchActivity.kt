@@ -33,9 +33,7 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
 
         clearButton.setOnClickListener {
-            inputEditText.setText("")
-            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-            inputEditText.clearFocus()
+            onClearClick(inputEditText,inputMethodManager)
         }
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -51,6 +49,12 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
+    }
+    private fun onClearClick(inputEditText:EditText,inputMethodManager:InputMethodManager?)
+    {
+        inputEditText.setText("")
+        inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+        inputEditText.clearFocus()
     }
 
 

@@ -40,12 +40,13 @@ class SettingsActivity : AppCompatActivity() {
         }
         val supportBtn = findViewById<Button>(R.id.support_button)
         supportBtn.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SENDTO)
-            shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.mail_subject))
-            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_email)))
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.mail_body))
-            startActivity(shareIntent)
+            startActivity(Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.mail_subject))
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_email)))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.mail_body))
+            }
+            )
         }
         val agreementBtn = findViewById<Button>(R.id.agreement_button)
         agreementBtn.setOnClickListener {
