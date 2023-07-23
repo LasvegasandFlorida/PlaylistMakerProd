@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,17 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 class SearchActivity : AppCompatActivity() {
     var userText: String? = null
     var listOfSongs= emptyList<Track>()
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: SearchActivity? = null
+
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
+    }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("USER_SAVED_INPUT",userText)
@@ -100,9 +113,15 @@ class SongsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         songName.text = model.trackName
         songAuthor.text = model.artistName
         songLength.text = model.trackTime
-        Glide.with(itemView).load(model.artworkUrl100).centerCrop().transform(RoundedCorners(2)).placeholder(R.drawable.placeholder).into(songImage)
+        Glide.with(itemView).load(model.artworkUrl100).centerCrop().transform(RoundedCorners(dpToPx(2f,SearchActivity.applicationContext()))).placeholder(R.drawable.placeholder).into(songImage)
     }
 
+}
+fun dpToPx(dp: Float, context: Context): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        dp,
+        context.resources.displayMetrics).toInt()
 }
 class SongsAdapter(
     private val tracks: List<Track>
