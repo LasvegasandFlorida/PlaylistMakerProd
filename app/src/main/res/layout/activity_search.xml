@@ -44,7 +44,8 @@
             android:id="@+id/search_edit_text"
             android:layout_width="0dp"
             android:layout_height="36dp"
-            android:maxLines="1"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:layout_weight="1"
             android:paddingStart="14dp"
             android:hint="@string/search_header"
@@ -67,8 +68,38 @@
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/standard_padding"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <ImageView
+        android:id="@+id/placeholderIcon"
+        android:layout_marginTop="102dp"
+        android:layout_marginBottom="@dimen/standard_padding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:ignore="ContentDescription" />
+    <TextView
+        android:id="@+id/placeholderText"
+        style="@style/SettingsSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/vector_ratio"
+        android:textSize="19sp"
+        android:visibility="gone"
+        android:textAlignment="center"
+        android:textAppearance="@font/ys_display_medium"
+        android:layout_gravity="center"/>
+    <Button
+        style="@style/UpdateButton"
+        android:id="@+id/update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:text="@string/update"
+        android:layout_gravity="center"/>
 </LinearLayout>

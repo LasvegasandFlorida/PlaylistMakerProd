@@ -10,6 +10,13 @@
     <item name="iconGravity">textStart</item>
     <item name="iconPadding">@dimen/icon_padding</item>
 </style>
+    <style name="UpdateButton" parent="Widget.MaterialComponents.Button.UnelevatedButton" >
+        <item name="android:textAppearance">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/text_micro</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/YP_black</item>
+        <item name="cornerRadius">54dp</item>
+    </style>
 <style name="SettingsMenu">
     <item name="android:textAppearance">@font/ys_display_medium</item>
     <item name="android:textSize">@dimen/text_small</item>

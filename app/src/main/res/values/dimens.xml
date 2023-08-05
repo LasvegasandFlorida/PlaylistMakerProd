@@ -4,6 +4,7 @@
     <dimen name="text">22sp</dimen>
     <dimen name="small_padding">8dp</dimen>
     <dimen name="text_small">16sp</dimen>
+    <dimen name="text_micro">14sp</dimen>
     <dimen name="text_ultra_small">11sp</dimen>
     <dimen name="small_horisontal_padding">12dp</dimen>
     <dimen name="icon_padding">10dp</dimen>

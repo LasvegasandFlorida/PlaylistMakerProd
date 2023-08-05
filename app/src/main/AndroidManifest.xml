@@ -17,6 +17,7 @@
             android:exported="false" />
         <activity
             android:name=".SearchActivity"
+            android:configChanges="uiMode"
             android:theme="@style/SettingsTheme"
             android:exported="false" />
         <activity
