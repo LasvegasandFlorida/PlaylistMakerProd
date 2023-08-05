@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton" >
+        <item name="android:textAppearance">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/text</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/YP_black</item>
+        <item name="cornerRadius">@dimen/standard_padding</item>
+        <item name="iconTint">@color/YP_black</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/icon_padding</item>
+    </style>
+    <style name="UpdateButton" parent="Widget.MaterialComponents.Button.UnelevatedButton" >
+        <item name="android:textAppearance">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/text_micro</item>
+        <item name="android:backgroundTint">@color/YP_black</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">54dp</item>
+    </style>
+    <style name="SettingsMenu">
+        <item name="android:textAppearance">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:paddingStart">@dimen/standard_padding</item>
+        <item name="android:paddingEnd">@dimen/standard_padding</item>
+        <item name="android:gravity">start</item>
+        <item name="android:clickable">false</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">@dimen/settings_bottom_padding</item>
+        <item name="iconGravity">end</item>
+        <item name="iconTint">@color/YP_Text_Gray</item>
+        <item name="android:backgroundTint">@color/white_back</item>
+        <item name="android:textColor">@color/YP_black</item>
+    </style>
+    <style name="SettingsSwitch">
+        <item name="android:thumbTint">@color/YP_Text_Gray</item>
+        <item name="android:trackTint">@color/YP_Light_Gray</item>
+    </style>
+
+    <style name="SearchEditText">
+        <item name="android:background">@color/YP_Light_Gray</item>
+        <item name="android:textColorHint">@color/YP_Text_Gray</item>
+        <item name="android:drawableStart">@drawable/search_small_gray</item>
+        <item name="android:textColor">@color/YP_Text_Gray</item>
+    </style>
+    <style name="SearchRecyclerSmallText">
+        <item name="android:textColor">@color/YP_Text_Gray</item>
+        <item name="tint">@color/YP_Text_Gray</item>
+    </style>
+    <style name="ClearBtn">
+        <item name="tint">@color/YP_black</item>
+    </style>
+</resources>
