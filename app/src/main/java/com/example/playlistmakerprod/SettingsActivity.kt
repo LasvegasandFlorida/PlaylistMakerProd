@@ -8,7 +8,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Switch
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.material.switchmaterial.SwitchMaterial
 
+const val SHARED_PREFERENCES = "playlistmaker_shared_preferences"
+const val NIGHT_MODE_KEY = "key_for_night_mode"
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,19 +20,14 @@ class SettingsActivity : AppCompatActivity() {
         backBtn.setOnClickListener {
             this.finish()
         }
-        val themeSwitch = findViewById<Switch>(R.id.theme_switch)
-        when (AppCompatDelegate.getDefaultNightMode())
-        {
-            AppCompatDelegate.MODE_NIGHT_YES -> themeSwitch.isChecked = true
-            AppCompatDelegate.MODE_NIGHT_NO -> themeSwitch.isChecked = false
-        }
+        val themeSwitch = findViewById<SwitchMaterial>(R.id.theme_switch)
+        val sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+        themeSwitch.isChecked = sharedPrefs.getBoolean(NIGHT_MODE_KEY,false)
         themeSwitch.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-
-                false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
+            (applicationContext as App).switchTheme(checkedId)
+            sharedPrefs.edit()
+                .putBoolean(NIGHT_MODE_KEY, checkedId)
+                .apply()
         }
         val shareBtn = findViewById<Button>(R.id.share_button)
         shareBtn.setOnClickListener {

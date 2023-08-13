@@ -28,6 +28,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">@dimen/settings_bottom_padding</item>
+        <item name="thumbTint">@color/YP_Text_Gray</item>
+        <item name="trackTint">@color/YP_Light_Gray</item>
         <item name="iconGravity">end</item>
         <item name="iconTint">@color/YP_Text_Gray</item>
         <item name="android:backgroundTint">@color/white_back</item>

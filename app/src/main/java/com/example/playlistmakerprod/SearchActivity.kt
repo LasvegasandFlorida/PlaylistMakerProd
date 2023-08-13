@@ -1,7 +1,6 @@
 package com.example.playlistmakerprod
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,8 +13,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,7 +20,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-
+const val SEARCH_HISTORY_KEY = "key_for_search_history"
 class SearchActivity : AppCompatActivity() {
     var userText: String? = null
     private val iTunesBaseUrl = "https://itunes.apple.com"
@@ -33,6 +30,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var updateButton:Button
     private lateinit var iTunesApiService:ITunesApi
     private lateinit var inputEditText:EditText
+    private lateinit var searchHistory: SearchHistory
+
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
@@ -43,7 +42,10 @@ class SearchActivity : AppCompatActivity() {
     }
     companion object {
         private var instance: SearchActivity? = null
-
+        const val ON_SUCCESS = 200
+        const val ON_NOTHING_FOUND = 0
+        const val ON_NO_CONNECTION = 2
+        const val SHOW_HISTORY = 1
         fun applicationContext() : Context {
             return instance!!.applicationContext
         }
@@ -64,19 +66,38 @@ class SearchActivity : AppCompatActivity() {
         backBtn.setOnClickListener {
             this.finish()
         }
+        val sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPrefs)
         iTunesApiService = retrofit.create<ITunesApi>()
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        inputEditText = findViewById<EditText>(R.id.search_edit_text)
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
-        listOfSongs = arrayListOf()
         updateButton = findViewById<Button>(R.id.update_button)
         placeholderTextView = findViewById<TextView>(R.id.placeholderText)
         placeholderImageView = findViewById<ImageView>(R.id.placeholderIcon)
+        inputEditText = findViewById<EditText>(R.id.search_edit_text)
+        listOfSongs = arrayListOf()
         songsAdapter =SongsAdapter(listOfSongs)
         recyclerView.adapter = songsAdapter
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        val clearButton = findViewById<ImageView>(R.id.clearIcon)
+        inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && inputEditText.text.isEmpty()) showHideError(SHOW_HISTORY)
+            else
+            {
+                listOfSongs.clear()
+                songsAdapter.notifyDataSetChanged()
+                showHideError(ON_SUCCESS)
+            }
+        }
         updateButton.setOnClickListener {
+            if (updateButton.text == getText(R.string.update))
             onUpdateConnClick()
+            else
+            {
+                searchHistory.clear()
+                listOfSongs.clear()
+                showHideError(ON_SUCCESS)
+                songsAdapter.notifyDataSetChanged()
+            }
         }
         clearButton.setOnClickListener {
             onClearClick(inputEditText,inputMethodManager)
@@ -88,8 +109,6 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
-
-
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -98,36 +117,58 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
                 userText = s.toString()
+                if (inputEditText.hasFocus() && inputEditText.text.isEmpty()) showHideError(SHOW_HISTORY)
+                else
+                {
+                    listOfSongs.clear()
+                    songsAdapter.notifyDataSetChanged()
+                    showHideError(ON_SUCCESS)
+                }
             }
-
             override fun afterTextChanged(s: Editable?) {
             }
+        }
+        songsAdapter.onItemClick = {track ->
+            searchHistory.add(track)
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
     }
     private fun showHideError(code: Int)
     {
-        if (code == 200)
-        {
-            placeholderImageView.visibility = View.GONE
-            placeholderTextView.visibility = View.GONE
-            updateButton.visibility = View.GONE
-        }
-        else if (code == 0)
-        {
-            placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found))
-            placeholderImageView.visibility = View.VISIBLE
-            placeholderTextView.visibility = View.VISIBLE
-            updateButton.visibility = View.GONE
-            placeholderTextView.setText(R.string.nothing_found)
-        }
-        else
-        {
-            placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_no_internet))
-            placeholderTextView.setText(R.string.no_internet)
-            updateButton.visibility = View.VISIBLE
-            placeholderImageView.visibility = View.VISIBLE
-            placeholderTextView.visibility = View.VISIBLE
+        when (code) {
+            ON_SUCCESS -> {
+                placeholderImageView.visibility = View.GONE
+                placeholderTextView.visibility = View.GONE
+                updateButton.visibility = View.GONE
+            }
+            ON_NOTHING_FOUND -> {
+                placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found))
+                placeholderImageView.visibility = View.VISIBLE
+                placeholderTextView.visibility = View.VISIBLE
+                updateButton.visibility = View.GONE
+                placeholderTextView.setText(R.string.nothing_found)
+            }
+            ON_NO_CONNECTION -> {
+                placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_no_internet))
+                placeholderTextView.setText(R.string.no_internet)
+                updateButton.visibility = View.VISIBLE
+                updateButton.text = getText(R.string.update)
+                placeholderImageView.visibility = View.VISIBLE
+                placeholderTextView.visibility = View.VISIBLE
+            }
+            SHOW_HISTORY ->
+            {
+                placeholderImageView.visibility = View.GONE
+                placeholderTextView.visibility = View.VISIBLE
+                updateButton.visibility = View.VISIBLE
+                updateButton.text = getText(R.string.clear_history_button)
+                placeholderTextView.setText(R.string.history_header)
+                listOfSongs.clear()
+                searchHistory.getSongs(listOfSongs)
+                if (listOfSongs.isEmpty())
+                    showHideError(ON_SUCCESS)
+                songsAdapter.notifyDataSetChanged()
+            }
         }
     }
     private fun onUpdateConnClick()
@@ -139,18 +180,18 @@ class SearchActivity : AppCompatActivity() {
                     listOfSongs.clear()
                     if (response.body()?.results?.isNotEmpty() == true)
                     {
-                        showHideError(response.code())
+                        showHideError(ON_SUCCESS)
                         listOfSongs.addAll(response.body()?.results!!)
                     }
                     if (listOfSongs.isEmpty())
                     {
-                        showHideError(0)
+                        showHideError(ON_NOTHING_FOUND)
                         listOfSongs.clear()
                     }
                 }
                 else
                 {
-                   showHideError(response.code())
+                   showHideError(ON_NO_CONNECTION)
                     listOfSongs.clear()
                 }
                 songsAdapter.notifyDataSetChanged()
@@ -159,7 +200,7 @@ class SearchActivity : AppCompatActivity() {
             }
             override fun onFailure(call: Call<ITunesResponse>, t: Throwable)
             {
-                showHideError(205)
+                showHideError(ON_NO_CONNECTION)
                 listOfSongs.clear()
                 songsAdapter.notifyDataSetChanged()
             }

@@ -24,6 +24,8 @@
     <item name="android:paddingEnd">@dimen/standard_padding</item>
     <item name="android:gravity">start</item>
     <item name="android:clickable">false</item>
+    <item name="thumbTint">@color/mainBlue</item>
+    <item name="trackTint">@color/mainBlue</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:paddingBottom">@dimen/settings_bottom_padding</item>
