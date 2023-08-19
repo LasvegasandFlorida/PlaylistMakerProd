@@ -26,7 +26,7 @@ init {
         songName.text = model.trackName
         songAuthor.text = model.artistName
         songLength.text =SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime.toInt()).toString()
-        Glide.with(itemView).load(model.artworkUrl100).centerCrop().transform(RoundedCorners(dpToPx(2f,SearchActivity.applicationContext()))).placeholder(R.drawable.placeholder).into(songImage)
+        Glide.with(itemView).load(model.artworkUrl100).centerCrop().transform(RoundedCorners(dpToPx(2f,itemView.context))).placeholder(R.drawable.placeholder).into(songImage)
     }
 
 }
