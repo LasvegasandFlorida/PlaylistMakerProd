@@ -1,7 +1,6 @@
 package com.example.playlistmakerprod
 
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,8 +13,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,10 +20,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-
+const val SEARCH_HISTORY_KEY = "key_for_search_history"
 class SearchActivity : AppCompatActivity() {
     var userText: String? = null
-    var currentNightMode = android.content.res.Configuration.UI_MODE_NIGHT_NO
     private val iTunesBaseUrl = "https://itunes.apple.com"
     private lateinit var listOfSongs:ArrayList<Track>
     private lateinit var placeholderTextView:TextView
@@ -34,21 +30,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var updateButton:Button
     private lateinit var iTunesApiService:ITunesApi
     private lateinit var inputEditText:EditText
+    private lateinit var searchHistory: SearchHistory
+
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private lateinit var songsAdapter:SongsAdapter
-    init {
-        instance = this
-    }
-    companion object {
-        private var instance: SearchActivity? = null
-
-        fun applicationContext() : Context {
-            return instance!!.applicationContext
-        }
-    }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("USER_SAVED_INPUT",userText)
@@ -58,13 +46,6 @@ class SearchActivity : AppCompatActivity() {
         val inputEditText = findViewById<EditText>(R.id.search_edit_text)
         inputEditText.setText(savedInstanceState.getString("USER_SAVED_INPUT",""))
     }
-    override fun onConfigurationChanged ( configuration:Configuration)
-    {
-        super.onConfigurationChanged(configuration)
-        currentNightMode = configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -72,20 +53,35 @@ class SearchActivity : AppCompatActivity() {
         backBtn.setOnClickListener {
             this.finish()
         }
-
+        val sharedPrefs = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPrefs)
         iTunesApiService = retrofit.create<ITunesApi>()
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        inputEditText = findViewById<EditText>(R.id.search_edit_text)
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
-        listOfSongs = arrayListOf()
         updateButton = findViewById<Button>(R.id.update_button)
         placeholderTextView = findViewById<TextView>(R.id.placeholderText)
         placeholderImageView = findViewById<ImageView>(R.id.placeholderIcon)
+        inputEditText = findViewById<EditText>(R.id.search_edit_text)
+        listOfSongs = arrayListOf()
         songsAdapter =SongsAdapter(listOfSongs)
         recyclerView.adapter = songsAdapter
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        val clearButton = findViewById<ImageView>(R.id.clearIcon)
+        inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && inputEditText.text.isEmpty()) showHideError(ErrorsMesseges.SHOW_HISTORY.code)
+            else {
+                listOfSongs.clear()
+                songsAdapter.notifyDataSetChanged()
+                showHideError(ErrorsMesseges.ON_SUCCESS.code)
+            }
+        }
         updateButton.setOnClickListener {
-            onUpdateConnClick()
+            if (updateButton.text == getText(R.string.update)) onUpdateConnClick()
+            else {
+                searchHistory.clear()
+                listOfSongs.clear()
+                showHideError(ErrorsMesseges.ON_SUCCESS.code)
+                songsAdapter.notifyDataSetChanged()
+            }
         }
         clearButton.setOnClickListener {
             onClearClick(inputEditText,inputMethodManager)
@@ -93,11 +89,9 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 onUpdateConnClick()
-                true
             }
             false
         }
-
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -106,83 +100,88 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
                 userText = s.toString()
+                if (inputEditText.hasFocus() && inputEditText.text.isEmpty()) showHideError(ErrorsMesseges.SHOW_HISTORY.code)
+                else {
+                    listOfSongs.clear()
+                    songsAdapter.notifyDataSetChanged()
+                    showHideError(ErrorsMesseges.ON_SUCCESS.code)
+                }
             }
-
             override fun afterTextChanged(s: Editable?) {
             }
         }
+        songsAdapter.onItemClick = { track ->
+            searchHistory.add(track)
+        }
         inputEditText.addTextChangedListener(simpleTextWatcher)
+    }
+    private fun showHideError(code: Int)
+    {
+        when (code) {
+            ErrorsMesseges.ON_SUCCESS.code -> {
+                placeholderImageView.visibility = View.GONE
+                placeholderTextView.visibility = View.GONE
+                updateButton.visibility = View.GONE
+            }
+            ErrorsMesseges.ON_NOTHING_FOUND.code -> {
+                placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found))
+                placeholderImageView.visibility = View.VISIBLE
+                placeholderTextView.visibility = View.VISIBLE
+                updateButton.visibility = View.GONE
+                placeholderTextView.setText(R.string.nothing_found)
+            }
+            ErrorsMesseges.ON_NO_CONNECTION.code -> {
+                placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_no_internet))
+                placeholderTextView.setText(R.string.no_internet)
+                updateButton.visibility = View.VISIBLE
+                updateButton.text = getText(R.string.update)
+                placeholderImageView.visibility = View.VISIBLE
+                placeholderTextView.visibility = View.VISIBLE
+            }
+            ErrorsMesseges.SHOW_HISTORY.code -> {
+                placeholderImageView.visibility = View.GONE
+                placeholderTextView.visibility = View.VISIBLE
+                updateButton.visibility = View.VISIBLE
+                updateButton.text = getText(R.string.clear_history_button)
+                placeholderTextView.setText(R.string.history_header)
+                listOfSongs.clear()
+                searchHistory.getSongs(listOfSongs)
+                if (listOfSongs.isEmpty()) showHideError(ErrorsMesseges.ON_SUCCESS.code)
+                songsAdapter.notifyDataSetChanged()
+            }
+        }
     }
     private fun onUpdateConnClick()
     {
         iTunesApiService.search(inputEditText.text.toString()).enqueue(object :Callback<ITunesResponse> {
             override fun onResponse(call: Call<ITunesResponse>, response: Response<ITunesResponse>) {
-                if (response.code() == 200) {
+                if (response.code() == 200){
                     listOfSongs.clear()
-                    if (response.body()?.results?.isNotEmpty() == true)
-                    {
-                        placeholderImageView.visibility = View.GONE
-                        placeholderTextView.visibility = View.GONE
-                        updateButton.visibility = View.GONE
+                    if (response.body()?.results?.isNotEmpty() == true){
+                        showHideError(ErrorsMesseges.ON_SUCCESS.code)
                         listOfSongs.addAll(response.body()?.results!!)
-                        songsAdapter.notifyDataSetChanged()
                     }
-                    if (listOfSongs.isEmpty())
-                    {
-                        when (currentNightMode) {
-                            Configuration.UI_MODE_NIGHT_NO ->  placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found_light))
-                            Configuration.UI_MODE_NIGHT_YES -> placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found_night))
-                        }
-                        when (AppCompatDelegate.getDefaultNightMode()) {
-                            AppCompatDelegate.MODE_NIGHT_YES -> placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found_night))
-                            AppCompatDelegate.MODE_NIGHT_NO ->  placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found_light))
-                        }
-
-                        placeholderImageView.visibility = View.VISIBLE
-                        placeholderTextView.visibility = View.VISIBLE
-                        updateButton.visibility = View.GONE
-                        placeholderTextView.setText(R.string.nothing_found)
+                    if (listOfSongs.isEmpty()){
+                        showHideError(ErrorsMesseges.ON_NOTHING_FOUND.code)
                         listOfSongs.clear()
-                        songsAdapter.notifyDataSetChanged()
                     }
-                } else {
-                    when (currentNightMode) {
-                        Configuration.UI_MODE_NIGHT_NO ->  placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_light))
-                        Configuration.UI_MODE_NIGHT_YES ->placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_night))
-                    }
-                    when (AppCompatDelegate.getDefaultNightMode()) {
-                        AppCompatDelegate.MODE_NIGHT_YES -> placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_night))
-                        AppCompatDelegate.MODE_NIGHT_NO -> placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_light))
-                    }
-                    placeholderTextView.setText(R.string.no_internet)
-                    updateButton.visibility = View.VISIBLE
-                    placeholderImageView.visibility = View.VISIBLE
-                    placeholderTextView.visibility = View.VISIBLE
-                    listOfSongs.clear()
-                    songsAdapter.notifyDataSetChanged()
-
                 }
+                else {
+                   showHideError(ErrorsMesseges.ON_NO_CONNECTION.code)
+                    listOfSongs.clear()
+                }
+                songsAdapter.notifyDataSetChanged()
+
+
             }
-
-
             override fun onFailure(call: Call<ITunesResponse>, t: Throwable)
             {
-                when (currentNightMode) {
-                    Configuration.UI_MODE_NIGHT_NO ->  placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_light))
-                    Configuration.UI_MODE_NIGHT_YES ->placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_night))
-                }
-                when (AppCompatDelegate.getDefaultNightMode()) {
-                    AppCompatDelegate.MODE_NIGHT_YES -> placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_night))
-                    AppCompatDelegate.MODE_NIGHT_NO -> placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_internet_light))
-                }
-                placeholderTextView.setText(R.string.no_internet)
-                placeholderImageView.visibility = View.VISIBLE
-                updateButton.visibility = View.VISIBLE
-                placeholderTextView.visibility = View.VISIBLE
+                showHideError(ErrorsMesseges.ON_NO_CONNECTION.code)
                 listOfSongs.clear()
                 songsAdapter.notifyDataSetChanged()
             }
         })
+
     }
     private fun onClearClick(inputEditText:EditText,inputMethodManager:InputMethodManager?)
     {

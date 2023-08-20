@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <style name="MainButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
-    <item name="android:textAppearance">@font/ys_display_medium</item>
+    <item name="android:fontFamily">@font/ys_text_medium</item>
+    <item name="android:textAllCaps">false</item>
     <item name="android:textSize">@dimen/text</item>
     <item name="android:backgroundTint">@color/white</item>
+    <item name="android:textStyle">normal</item>
     <item name="android:textColor">@color/YP_black</item>
     <item name="cornerRadius">@dimen/standard_padding</item>
     <item name="iconTint">@color/YP_black</item>
@@ -11,19 +13,24 @@
     <item name="iconPadding">@dimen/icon_padding</item>
 </style>
     <style name="UpdateButton" parent="Widget.MaterialComponents.Button.UnelevatedButton" >
-        <item name="android:textAppearance">@font/ys_display_medium</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/text_micro</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/YP_black</item>
         <item name="cornerRadius">54dp</item>
     </style>
 <style name="SettingsMenu">
-    <item name="android:textAppearance">@font/ys_display_medium</item>
+    <item name="android:fontFamily">@font/ys_display_medium</item>
+    <item name="android:textStyle">normal</item>
     <item name="android:textSize">@dimen/text_small</item>
     <item name="android:paddingStart">@dimen/standard_padding</item>
     <item name="android:paddingEnd">@dimen/standard_padding</item>
     <item name="android:gravity">start</item>
     <item name="android:clickable">false</item>
+    <item name="thumbTint">@color/mainBlue</item>
+    <item name="trackTint">@color/mainBlue</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:paddingBottom">@dimen/settings_bottom_padding</item>
@@ -36,6 +43,7 @@
     <style name="SettingsSwitch">
         <item name="android:thumbTint">@color/mainBlue</item>
         <item name="android:trackTint">@color/mainBlue</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:tint">@color/white</item>
     </style>
@@ -44,6 +52,10 @@
         <item name="android:textColorHint">@color/YP_black</item>
         <item name="android:drawableStart">@drawable/search_small_black</item>
         <item name="android:textColor">@color/YP_black</item>
+    </style>
+    <style name="SearchRecyclerSmallText">
+        <item name="android:fontFamily">@font/ys_text_regular</item>
+        <item name="android:textColor">@color/white</item>
     </style>
     <style name="ClearBtn">
         <item name="tint">@color/white</item>

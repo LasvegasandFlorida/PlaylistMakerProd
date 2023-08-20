@@ -28,25 +28,14 @@
             android:textAppearance="@font/ys_display_medium"
             android:layout_marginStart="28dp"/>
     </LinearLayout>
-    <FrameLayout
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/theme_switch"
+        android:text="@string/settings_night"
+        style="@style/SettingsMenu"
+        android:clickable="true"
+        android:layout_marginTop="61dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="61dp">
-        <TextView
-            style="@style/SettingsMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@font/ys_display_medium"
-            android:textSize="@dimen/text_small"
-            android:text="@string/settings_night"/>
-        <Switch
-            android:id="@+id/theme_switch"
-            style="@style/SettingsSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            tools:ignore="UseSwitchCompatOrMaterialXml"/>
-    </FrameLayout>
+        android:layout_height="wrap_content"/>
         <Button
             android:id="@+id/share_button"
             style="@style/SettingsMenu"
