@@ -57,6 +57,9 @@
         <item name="android:fontFamily">@font/ys_text_regular</item>
         <item name="android:textColor">@color/white</item>
     </style>
+    <style name="PlayerSmallText">
+        <item name="android:textColor">@color/YP_Text_Gray</item>
+    </style>
     <style name="ClearBtn">
         <item name="tint">@color/white</item>
     </style>

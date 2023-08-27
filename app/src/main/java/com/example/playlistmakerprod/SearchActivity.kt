@@ -1,6 +1,7 @@
 package com.example.playlistmakerprod
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,6 +21,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 const val SEARCH_HISTORY_KEY = "key_for_search_history"
 class SearchActivity : AppCompatActivity() {
     var userText: String? = null

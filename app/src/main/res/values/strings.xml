@@ -19,4 +19,9 @@
     <string name="no_internet">Проблемы со связью \n \n Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="clear_history_button">Очистить историю</string>
     <string name="history_header">Вы искали</string>
+    <string name="country">Страна</string>
+    <string name="genre">Жанр</string>
+    <string name="year">Год</string>
+    <string name="album">Альбом</string>
+    <string name="track_time">Длительность</string>
 </resources>
