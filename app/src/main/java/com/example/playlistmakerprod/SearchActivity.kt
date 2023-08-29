@@ -116,6 +116,15 @@ class SearchActivity : AppCompatActivity() {
         }
         songsAdapter.onItemClick = { track ->
             searchHistory.add(track)
+            val playerIntent = Intent(this, AudioPlayer::class.java)
+            playerIntent.putExtra("trackId",track.trackId)
+            playerIntent.putExtra("artistName",track.artistName)
+            playerIntent.putExtra("trackName",track.trackName)
+            playerIntent.putExtra("country",track.country)
+            playerIntent.putExtra("releaseYear", track.releaseDate?.substringBefore("-"))
+            playerIntent.putExtra(AudioPlayer.SECOND_ACTIVITY_CODE,track)
+            // start the second Activity
+            this.startActivity(playerIntent)
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
     }

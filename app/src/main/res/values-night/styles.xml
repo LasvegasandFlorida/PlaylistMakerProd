@@ -48,9 +48,7 @@
         <item name="android:tint">@color/white</item>
     </style>
     <style name="SearchEditText">
-        <item name="android:background">@color/white</item>
         <item name="android:textColorHint">@color/YP_black</item>
-        <item name="android:drawableStart">@drawable/search_small_black</item>
         <item name="android:textColor">@color/YP_black</item>
     </style>
     <style name="SearchRecyclerSmallText">
@@ -60,7 +58,7 @@
     <style name="PlayerSmallText">
         <item name="android:textColor">@color/YP_Text_Gray</item>
     </style>
-    <style name="ClearBtn">
-        <item name="tint">@color/white</item>
+    <style name="ClearIcon">
+        <item name="android:background">@color/white</item>
     </style>
 </resources>
