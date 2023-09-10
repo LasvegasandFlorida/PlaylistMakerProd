@@ -1,8 +1,12 @@
 package com.example.playlistmakerprod
 
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -16,6 +20,33 @@ class AudioPlayer : AppCompatActivity() {
     companion object{
         // Key that pass with intent
         var SECOND_ACTIVITY_CODE="second_activity"
+        private const val UPDATE_TIME_DELAY = 500L
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
+    private var mediaPlayer = MediaPlayer()
+    private var playerState = STATE_DEFAULT
+    private lateinit var playBtn: ImageView
+    private lateinit var trackProgress: TextView
+    private var mainThreadHandler: Handler? = null
+    private var url:String? = ""
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(url)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playBtn.isEnabled = true
+            playBtn.setImageDrawable(getDrawable(R.drawable.play_btn))
+            trackProgress.setText("00:00")
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            playBtn.setImageDrawable(getDrawable(R.drawable.play_btn))
+            trackProgress.setText("00:00")
+            playerState = STATE_PREPARED
+            mainThreadHandler?.removeCallbacksAndMessages(null)
+        }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +55,7 @@ class AudioPlayer : AppCompatActivity() {
         backBtn.setOnClickListener {
             this.finish()
         }
+        mainThreadHandler = Handler(Looper.getMainLooper())
         var model:Track?=null
         if(intent.hasExtra(SECOND_ACTIVITY_CODE)){
             // getting the Parcelable object into the employeeModel
@@ -51,7 +83,68 @@ class AudioPlayer : AppCompatActivity() {
             trackTimeNowView.text = trackTime
             val trackYearView = findViewById<TextView>(R.id.track_year_content)
             trackYearView.text = model.releaseDate?.substringBefore("-")
+            url = model.previewUrl
         }
+        playBtn = findViewById<ImageView>(R.id.play_button)
+        preparePlayer()
 
+        trackProgress = findViewById<TextView>(R.id.track_time_now)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        playBtn.setOnClickListener {
+            playbackControl()
+        }
+    }
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        mainThreadHandler?.removeCallbacksAndMessages(null)
+    }
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playBtn.setImageDrawable(getDrawable(R.drawable.pause_btn))
+        playerState = STATE_PLAYING
+        mainThreadHandler?.postDelayed(
+            object : Runnable {
+                override fun run() {
+                    checkTime()
+                    mainThreadHandler?.postDelayed(
+                        this,
+                        UPDATE_TIME_DELAY,
+                    )
+                }
+            },
+            UPDATE_TIME_DELAY
+        )
+    }
+
+    private fun pausePlayer() {
+
+        mediaPlayer.pause()
+        playBtn.setImageDrawable(getDrawable(R.drawable.play_btn))
+        playerState = STATE_PAUSED
+        mainThreadHandler?.removeCallbacksAndMessages(null)
+    }
+    private fun playbackControl() {
+        when(playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
+    }
+    private fun checkTime() {
+        if (playerState == STATE_PLAYING){
+            var currentTime = 30000L- mediaPlayer.currentPosition.toLong()
+            trackProgress.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentTime).toString()
+        }
     }
 }

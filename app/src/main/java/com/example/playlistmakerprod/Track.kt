@@ -12,10 +12,12 @@ data class Track(val trackId:Int, val trackName:String?,
                  val country:String?,
                  val primaryGenreName:String?,
                  val collectionName:String?,
+                 val previewUrl:String?,
                  val releaseDate:String?
 ):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -38,6 +40,7 @@ data class Track(val trackId:Int, val trackName:String?,
         parcel.writeString(country)
         parcel.writeString(primaryGenreName)
         parcel.writeString(collectionName)
+        parcel.writeString(previewUrl)
         parcel.writeString(releaseDate)
     }
     companion object CREATOR : Parcelable.Creator<Track> {

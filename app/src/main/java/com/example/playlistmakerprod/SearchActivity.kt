@@ -3,6 +3,8 @@ package com.example.playlistmakerprod
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -12,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 const val SEARCH_HISTORY_KEY = "key_for_search_history"
+
 class SearchActivity : AppCompatActivity() {
     var userText: String? = null
     private val iTunesBaseUrl = "https://itunes.apple.com"
@@ -32,10 +36,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderTextView:TextView
     private lateinit var placeholderImageView:ImageView
     private lateinit var updateButton:Button
+    private lateinit var progressBar: ProgressBar
     private lateinit var iTunesApiService:ITunesApi
     private lateinit var inputEditText:EditText
     private lateinit var searchHistory: SearchHistory
-
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable {onUpdateConnClick()}
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
@@ -45,6 +52,11 @@ class SearchActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putString("USER_SAVED_INPUT",userText)
     }
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         val inputEditText = findViewById<EditText>(R.id.search_edit_text)
@@ -65,6 +77,7 @@ class SearchActivity : AppCompatActivity() {
         placeholderTextView = findViewById<TextView>(R.id.placeholderText)
         placeholderImageView = findViewById<ImageView>(R.id.placeholderIcon)
         inputEditText = findViewById<EditText>(R.id.search_edit_text)
+        progressBar = findViewById<ProgressBar>(R.id.progressBar)
         listOfSongs = arrayListOf()
         songsAdapter =SongsAdapter(listOfSongs)
         recyclerView.adapter = songsAdapter
@@ -109,18 +122,33 @@ class SearchActivity : AppCompatActivity() {
                     listOfSongs.clear()
                     songsAdapter.notifyDataSetChanged()
                     showHideError(ErrorsMesseges.ON_SUCCESS.code)
+                    searchDebounce()
                 }
             }
             override fun afterTextChanged(s: Editable?) {
             }
         }
         songsAdapter.onItemClick = { track ->
-            searchHistory.add(track)
-            val playerIntent = Intent(this, AudioPlayer::class.java)
-            playerIntent.putExtra(AudioPlayer.SECOND_ACTIVITY_CODE,track)
-            this.startActivity(playerIntent)
+            if (clickDebounce()) {
+                searchHistory.add(track)
+                val playerIntent = Intent(this, AudioPlayer::class.java)
+                playerIntent.putExtra(AudioPlayer.SECOND_ACTIVITY_CODE, track)
+                this.startActivity(playerIntent)
+            }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
+    }
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
     private fun showHideError(code: Int)
     {
@@ -129,6 +157,7 @@ class SearchActivity : AppCompatActivity() {
                 placeholderImageView.visibility = View.GONE
                 placeholderTextView.visibility = View.GONE
                 updateButton.visibility = View.GONE
+                progressBar.visibility = View.GONE
             }
             ErrorsMesseges.ON_NOTHING_FOUND.code -> {
                 placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_nothing_found))
@@ -136,6 +165,7 @@ class SearchActivity : AppCompatActivity() {
                 placeholderTextView.visibility = View.VISIBLE
                 updateButton.visibility = View.GONE
                 placeholderTextView.setText(R.string.nothing_found)
+                progressBar.visibility = View.GONE
             }
             ErrorsMesseges.ON_NO_CONNECTION.code -> {
                 placeholderImageView.setImageDrawable(getDrawable(R.drawable.placeholder_no_internet))
@@ -144,10 +174,18 @@ class SearchActivity : AppCompatActivity() {
                 updateButton.text = getText(R.string.update)
                 placeholderImageView.visibility = View.VISIBLE
                 placeholderTextView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+            }
+            ErrorsMesseges.PROGRESS_BAR.code -> {
+                updateButton.visibility = View.GONE
+                placeholderImageView.visibility = View.GONE
+                placeholderTextView.visibility = View.GONE
+                progressBar.visibility = View.VISIBLE
             }
             ErrorsMesseges.SHOW_HISTORY.code -> {
                 placeholderImageView.visibility = View.GONE
                 placeholderTextView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
                 updateButton.visibility = View.VISIBLE
                 updateButton.text = getText(R.string.clear_history_button)
                 placeholderTextView.setText(R.string.history_header)
@@ -160,6 +198,7 @@ class SearchActivity : AppCompatActivity() {
     }
     private fun onUpdateConnClick()
     {
+        showHideError(ErrorsMesseges.PROGRESS_BAR.code)
         iTunesApiService.search(inputEditText.text.toString()).enqueue(object :Callback<ITunesResponse> {
             override fun onResponse(call: Call<ITunesResponse>, response: Response<ITunesResponse>) {
                 if (response.code() == 200){
