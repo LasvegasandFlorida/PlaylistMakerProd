@@ -1,13 +1,16 @@
 package com.example.playlistmakerprod
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -25,7 +28,7 @@ init {
     fun bind(model: Track) {
         songName.text = model.trackName
         songAuthor.text = model.artistName
-        songLength.text =SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime.toInt()).toString()
+        songLength.text =SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime?.toInt()).toString()
         Glide.with(itemView).load(model.artworkUrl100).centerCrop().transform(RoundedCorners(dpToPx(2f,itemView.context))).placeholder(R.drawable.placeholder).into(songImage)
     }
 

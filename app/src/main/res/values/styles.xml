@@ -48,15 +48,16 @@
 
     <style name="SearchEditText">
         <item name="android:fontFamily">@font/ys_text_regular</item>
-        <item name="android:background">@color/YP_Light_Gray</item>
         <item name="android:textColorHint">@color/YP_Text_Gray</item>
-        <item name="android:drawableStart">@drawable/search_small_gray</item>
         <item name="android:textColor">@color/YP_Text_Gray</item>
     </style>
     <style name="SearchRecyclerSmallText">
         <item name="android:textColor">@color/YP_Text_Gray</item>
     </style>
-    <style name="ClearBtn">
-        <item name="tint">@color/YP_black</item>
+    <style name="PlayerSmallText">
+        <item name="android:textColor">@color/YP_Text_Gray</item>
+    </style>
+    <style name="ClearIcon">
+        <item name="android:background">@color/YP_Light_Gray</item>
     </style>
 </resources>

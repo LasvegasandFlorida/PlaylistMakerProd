@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="country">Страна</string>
+    <string name="genre">Жанр</string>
+    <string name="year">Год</string>
+    <string name="album">Альбом</string>
+    <string name="track_time">Длительность</string>
+</resources>

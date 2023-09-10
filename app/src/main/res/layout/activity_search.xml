@@ -22,7 +22,6 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/arrow_back"
             tools:ignore="ContentDescription" />
-
         <TextView
             style="@style/SettingsSwitch"
             android:layout_width="wrap_content"
@@ -36,35 +35,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/standard_padding"
-        android:paddingHorizontal="@dimen/standard_padding"
         android:orientation="horizontal"
         tools:ignore="RtlSymmetry,UseCompoundDrawables">
         <EditText
             style="@style/SearchEditText"
             android:id="@+id/search_edit_text"
+            android:background="@drawable/search_edit_text"
             android:layout_width="0dp"
             android:layout_height="36dp"
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:layout_weight="1"
-            android:paddingStart="14dp"
+            android:layout_marginStart="@dimen/standard_padding"
+            android:layout_marginEnd="@dimen/standard_padding"
+            android:paddingEnd="@dimen/standard_padding"
             android:hint="@string/search_header"
             android:textSize="@dimen/text_small"
             android:inputType="text"
-            app:cornerRadius="@dimen/standard_padding"
+            android:drawableStart="@drawable/search_icon"
             android:drawablePadding="@dimen/standard_padding"
             android:paddingHorizontal="@dimen/standard_padding"
             android:textCursorDrawable="@drawable/search_cursor"
             tools:ignore="Autofill" />
         <ImageView
             android:id="@+id/clearIcon"
-            style="@style/ClearBtn"
+            style="@style/ClearIcon"
+            android:layout_marginEnd="34dp"
+            android:layout_marginStart="-50dp"
             android:layout_width="wrap_content"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:visibility="gone"
-            tools:ignore="ContentDescription" />
+            android:src="@drawable/clear_button"
+            tools:ignore="ContentDescription"/>
     </LinearLayout>
     <ImageView
         android:id="@+id/placeholderIcon"
